@@ -32,22 +32,7 @@ git clone https://github.com/Sebastian-Paucar/EUREKACOMPOSE
 cd EUREKACOMPOSE
 ```
 
-
-## 3️⃣ Configuración del puerto externo del servicio Payara
-
-Para que el servicio SOAP genere el **WSDL con la dirección correcta**, es necesario configurar la variable `EXTERNAL_ADDRESS` en el archivo `.env`.
-
-Esta variable define la **URL pública** desde la cual los clientes externos accederán al servicio.
-
-
-
-Modifica la variable `EXTERNAL_ADDRESS` y reemplázala con la **IP o dominio del servidor** donde está ejecutándose el contenedor de Payara.
-
-Ejemplo usando una IP local y el puerto externo 8083:
-```env
-EXTERNAL_ADDRESS=http://192.xxx.100.xxx:8083
-```
-## 4️⃣ Levantar el entorno completo
+## 3️⃣ Levantar el entorno completo
 ```bash
 docker-compose up -d
 ```
