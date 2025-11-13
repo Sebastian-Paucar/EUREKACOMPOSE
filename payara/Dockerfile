@@ -12,14 +12,11 @@ COPY lib/mysql-connector-j-8.0.33.jar \
 # Crear carpeta de despliegue
 RUN mkdir -p ${DEPLOY_DIR}
 
-# ----------------------------
-# SCRIPT POST-BOOT
-# ----------------------------
-# Se ejecuta al iniciar Payara y fuerza la URL del WSDL
+# Script post-boot automatizado
 RUN echo "\
-asadmin set configs.config.server-config.web-service-container.property.webservice.endpoint.publish.enabled=true\n\
-asadmin set configs.config.server-config.web-service-container.property.webservice.endpoint.publish.address=${EXTERNAL_ADDRESS}\n\
+asadmin set configs.config.server-config.web-service-container.property.use-request-host=true\n\
 " > /opt/payara/config/post-boot.asadmin
+
 
 # Exponer puertos
 EXPOSE 8080 4848
