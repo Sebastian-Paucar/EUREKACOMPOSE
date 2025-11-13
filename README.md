@@ -34,5 +34,5 @@ cd EUREKACOMPOSE
 
 ## 3️⃣ Levantar el entorno completo
 ```bash
-docker-compose up -d
+docker-compose up --buld
 ```
