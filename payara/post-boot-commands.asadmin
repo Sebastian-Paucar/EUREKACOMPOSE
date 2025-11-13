@@ -1,0 +1,3 @@
+# Forzar Payara a publicar el WSDL usando una dirección externa fija
+set configs.config.server-config.web-service-container.property.webservice.endpoint.publish.enabled=true
+set configs.config.server-config.web-service-container.property.webservice.endpoint.publish.address=${EXTERNAL_ADDRESS}

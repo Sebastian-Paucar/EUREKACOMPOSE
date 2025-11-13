@@ -13,15 +13,11 @@ Este documento explica cómo instalar y ejecutar en un **servidor Linux** el ent
 
 ## 1️⃣ Requisitos del Servidor
 
-### Sistema Operativo Recomendado
-- Ubuntu 20.04 / 22.04  
-- Debian 11+  
-- CentOS / RockyLinux 8+
 
 ### Hardware mínimo
 - CPU: 2 cores  
 - RAM: 4 GB  
-- Disco: 10 GB libres  
+- Disco: 5 GB libres  
 
 ### Puertos usados
 - 8083 → HTTP Payara  
@@ -31,9 +27,27 @@ Este documento explica cómo instalar y ejecutar en un **servidor Linux** el ent
 ---
 
 ## 2️⃣ Instalar Docker y Docker Compose
-
-Actualizar e instalar dependencias:
-
 ```bash
-sudo apt update
-sudo apt install -y ca-certificates curl gnupg lsb-release
+git clone https://github.com/Sebastian-Paucar/EUREKACOMPOSE
+cd EUREKACOMPOSE
+```
+
+
+## 3️⃣ Configuración del puerto externo del servicio Payara
+
+Para que el servicio SOAP genere el **WSDL con la dirección correcta**, es necesario configurar la variable `EXTERNAL_ADDRESS` en el archivo `.env`.
+
+Esta variable define la **URL pública** desde la cual los clientes externos accederán al servicio.
+
+
+
+Modifica la variable `EXTERNAL_ADDRESS` y reemplázala con la **IP o dominio del servidor** donde está ejecutándose el contenedor de Payara.
+
+Ejemplo usando una IP local y el puerto externo 8083:
+```env
+EXTERNAL_ADDRESS=http://192.xxx.100.xxx:8083
+```
+## 4️⃣ Levantar el entorno completo
+```bash
+docker-compose up -d
+```
