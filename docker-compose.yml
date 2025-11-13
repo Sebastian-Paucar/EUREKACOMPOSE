@@ -1,0 +1,61 @@
+services: 
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "${MYSQL_PORT}:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    command: [
+      "--default-authentication-plugin=mysql_native_password",
+      "--character-set-server=utf8mb4",
+      "--collation-server=utf8mb4_unicode_ci"
+    ]
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u${MYSQL_USER} -p${MYSQL_PASSWORD} --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  payara:
+    build:
+      context: ./payara
+      dockerfile: Dockerfile
+    container_name: payara-app
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      # Credenciales para crear el pool (se inyectan en el post-boot)
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+      # (opcional) Cambia el password del admin de Payara
+      ADMIN_PASSWORD: ${PAYARA_ADMIN_PASSWORD}
+    ports:
+      - "${PAYARA_HTTP_PORT}:8080"
+      - "${PAYARA_ADMIN_PORT}:4848"
+    volumes:
+      - ./app/WS_EUREKANUBE_SOAP.war:/opt/payara/deployments/WS_EUREKANUBE_SOAP.war:ro
+    # Si quieres logs fuera:
+    # - payara_logs:/opt/payara/appserver/glassfish/domains/domain1/logs
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  db_data:
+  # payara_logs:
